@@ -1,1 +1,1 @@
-# SafePass
+SafePass is a Flask-based web application designed to securely manage and store passwords. It provides a user-friendly interface for storing, retrieving, and managing passwords with heightened security measures to ensure that your credentials are safe from unauthorized access. SafePass aims to simplify password management while maintaining high levels of protection.
