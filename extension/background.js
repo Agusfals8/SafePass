@@ -1,42 +1,42 @@
-const API_URL = 'https://example.com/api';
-const API_KEY = 'YOUR_API_KEY';
+const SYNC_API_URL = 'https://example.com/api';
+const AUTHORIZATION_KEY = 'YOUR_API_KEY';
 
-async function syncData() {
+async function synchronizeRemoteDataToLocal() {
   try {
-    const response = await fetch(`${API_URL}/sync`, {
+    const apiResponse = await fetch(`${SYNC_API_URL}/sync`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`
+        'Authorization': `Bearer ${AUTHORIZATION_KEY}`
       }
     });
-    if (!response.ok) throw new Error('Failed to fetch data');
-    const data = await response.json();
-    chrome.storage.local.set({ syncedData: data }, () => {
-      console.log('Data synced with local storage.');
+    if (!apiResponse.ok) throw new Error('Failed to fetch data from API');
+    const remoteData = await apiResponse.json();
+    chrome.storage.local.set({ localSyncedData: remoteData }, () => {
+      console.log('Remote data has been successfully synchronized with local storage.');
     });
   } catch (error) {
-    console.error('Error syncing data:', error.message);
+    console.error('Error during data synchronization:', error.message);
   }
 }
 
-function setupSyncAlarm() {
-  chrome.alarms.create('syncData', { periodInMinutes: 60 });
+function initializeDataSyncTimer() {
+  chrome.alarms.create('dataSyncAlarm', { periodInMinutes: 60 });
   chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === 'syncData') syncData();
+    if (alarm.name === 'dataSyncAlarm') synchronizeRemoteDataToLocal();
   });
 }
 
-chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason.search(/install|update/) !== -1) {
-    syncData();
-    setupSyncAlarm();
+chrome.runtime.onInstalled.addListener((installationDetails) => {
+  if (installationDetails.reason.search(/install|update/) !== -1) {
+    synchronizeRemoteDataToLocal();
+    initializeDataSyncTimer();
   }
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "syncNow") {
-    syncData().then(() => sendResponse({ status: 'completed' }));
-    return true;
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "invokeImmediateSync") {
+    synchronizeRemoteDataToLocal().then(() => sendResponse({ status: 'synchronizationCompleted' }));
+    return true; // Indicates async response will be sent
   }
 });
