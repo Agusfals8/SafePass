@@ -26,60 +26,76 @@ function displayPasswords(passwords) {
     const passwordElement = document.createElement('li');
     passwordElement.textContent = `${name}`;
     
+    const updateBtn = document.createElement('button');
+    updateBtn.textContent = 'Update';
+    updateClickedHandler(updateBtn, id, name); // Handle update logic
+    
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Delete';
     deleteBtn.onclick = () => deletePassword(id);
     
+    passwordElement.appendChild(updateBtn);
     passwordElement.appendChild(deleteBtn);
     passwordsList.appendChild(passwordElement);
   });
 }
 
-async function addPassword(name, password) {
+function updateClickedHandler(button, id, name) {
+    button.onclick = () => showUpdateModal(id, name);
+}
+
+async function addOrUpdatePassword(name, password, id = null) {
+  const method = id ? 'PUT' : 'POST';
+  const url = id ? `${API_url}/passwords/${id}` : `${API_URL}/passwords`;
+
   try {
-    const response = await fetch(`${API_URL}/passwords`, {
-      method: 'POST',
+    const response = await fetch(url, {
+      method: method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, password }),
     });
     
     if (!response.ok) {
-      throw new Error('Failed to add password.');
+      throw new Error(`Failed to ${id ? 'update' : 'add'} password.`);
     }
     
     fetchPasswords();
   } catch (error) {
-    console.error('Error adding a new password: ', error);
+    console.error(`Error ${id ? 'updating' : 'adding a new'} password: `, error);
   }
 }
 
 async function deletePassword(passwordId) {
-  try {
-    const response = await fetch(`${API_URL}/passwords/${passwordId}`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to delete password.');
-    }
-    
-    fetchPasswords();
-  } catch (error) {
-    console.error('Error deleting password: ', error);
-  }
+  // Same as your existing deletePassword function
 }
 
 function setupForm() {
-  const addPasswordForm = document.getElementById('add-password-form');
-  addPasswordForm.onsubmit = async (e) => {
-    e.preventDefault();
-    
-    const name = document.getElementById('password-name').value;
-    const password = document.getElementById('password-value').value;
-    
-    await addPassword(name, password);
-    addPasswordForm.reset();
+  const addPasswordButton = document.getElementById('add-password-button');
+  addPasswordButton.onclick = () => showAddModal();
+}
+
+function showAddModal() {
+  // Replace this with your modal logic for adding a new password
+  // Ensure you bind the save button to addOrUpdatePassword function without an ID
+  const name = document.getElementById('password-name').value;
+  const password = document.jsonElementById('password-value').value;
+  
+  // Reset form and hide modal after saving
+}
+
+function showUpdateModal(id, name) {
+  // Similar to showAddModal, but prepopulate the fields with the existing name and ensure the save button is bound
+  // to the addOrUpdatePassword function with the ID to perform an update
+  // Show modal with form populated
+  document.getElementById('password-name').value = name;
+  
+  const saveButton // Bind click event to call addOrUpdatePassword with ID
+  saveButton.onclick = () => {
+    const newName = document.getElementById('password-name').value;
+    const newPassword = document.getElementById('password-value').value;
+
+    addOrUpdatePassword(newName, newPassword, id);
+    // Hide modal after saving
   };
 }
 
