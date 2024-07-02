@@ -1,0 +1,87 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  background-color: #f4f4f4;
+}
+
+.pop-up-container {
+  background-color: #ffffff;
+  width: 90%;
+  max-width: 400px;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.pop-up-container form {
+  padding: 20px;
+}
+
+.pop-up-container form label {
+  display: block;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.pop-up-container form input,
+.pop-up-container form button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.pop-up-container form button {
+  background-color: #005eff;
+  color: white;
+  cursor: pointer;
+}
+
+.pop-up-container form button:hover {
+  background-color: #0046d5;
+}
+
+.password-list {
+  list-style: none;
+  padding: 15px;
+  background-color: #f9f9f9;
+}
+
+.password-item {
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.password-item p {
+  margin: 0;
+  color: #333;
+}
+
+.copy-button {
+  background-color: #009688;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background-color: #00796b;
+}
